@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ME AI — Your Ideas. Your AI.</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e1a;
+      --card-bg: #121829;
+      --card-border: #1e293b;
+      --accent-purple: #9333ea;
+      --accent-blue: #3b82f6;
+      --accent-gradient: linear-gradient(135deg, #6366f1 0%, #9333ea 50%, #3b82f6 100%);
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --input-bg: #1e293b;
+      --input-border: #334155;
+      --success: #10b981;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-dark);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 780px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    header {
+      text-align: center;
+      padding: 12px 0 8px 0;
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 56px;
+      height: 56px;
+      background: var(--accent-gradient);
+      border-radius: 14px;
+      font-weight: 800;
+      font-size: 24px;
+      color: #fff;
+      box-shadow: 0 0 25px rgba(99, 102, 241, 0.4);
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 6px;
+    }
+
+    .tagline {
+      color: var(--text-muted);
+      font-size: 0.98rem;
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    select, textarea, input {
+      width: 100%;
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 10px;
+      color: var(--text-main);
+      padding: 12px 14px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    select:focus, textarea:focus, input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.25);
+    }
+
+    textarea {
+      min-height: 110px;
+      resize: vertical;
+      line-height: 1.5;
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    @media (max-width: 600px) {
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+      .card {
+        padding: 18px;
+      }
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    button {
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 10px;
+      padding: 12px 20px;
+      border: none;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      flex: 2;
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+
+    .btn-primary:hover {
+      opacity: 0.95;
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      flex: 1;
+      background: #1e293b;
+      color: var(--text-muted);
+      border: 1px solid var(--input-border);
+    }
+
+    .btn-secondary:hover {
+      background: #27354a;
+      color: #fff;
+    }
+
+    .output-section {
+      display: none;
+    }
+
+    .output-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .output-title {
+      font-size: 1rem;
+      font-weight: 700;
+      color: #e2e8f0;
+    }
+
+    .output-box {
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      border-radius: 12px;
+      padding: 18px;
+      color: #f1f5f9;
+      white-space: pre-wrap;
+      line-height: 1.6;
+      font-size: 0.95rem;
+      min-height: 140px;
+    }
+
+    .output-actions {
+      display: flex;
+      gap: 12px;
+      margin-top: 16px;
+    }
+
+    .btn-action {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 0.9rem;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      background: var(--success);
+      color: white;
+      padding: 10px 20px;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      display: none;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      z-index: 1000;
+    }
+
+    footer {
+      margin-top: auto;
+      padding-top: 24px;
+      font-size: 0.8rem;
+      color: #475569;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <header>
+      <div class="logo-badge">ME</div>
+      <h1>ME AI</h1>
+      <p class="tagline">Your Ideas. Your AI.</p>
+    </header>
+
+    <div class="card">
+      <form id="marketingForm">
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="businessType">Business Category</label>
+            <select id="businessType" required>
+              <option value="Retail & E-commerce">Retail &amp; E-commerce</option>
+              <option value="Food, Cafe & Restaurant">Food, Cafe &amp; Restaurant</option>
+              <option value="Health, Fitness & Wellness">Health, Fitness &amp; Wellness</option>
+              <option value="Professional & Agency Services">Professional &amp; Agency Services</option>
+              <option value="Fashion, Beauty & Lifestyle">Fashion, Beauty &amp; Lifestyle</option>
+              <option value="Tech, SaaS & Digital Products">Tech, SaaS &amp; Digital Products</option>
+              <option value="Education & Coaching">Education &amp; Coaching</option>
+              <option value="Freelancer & Creative Services">Freelancer &amp; Creative Services</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="contentType">Content Type</label>
+            <select id="contentType" required>
+              <option value="social_post">Social Media Caption &amp; Post</option>
+              <option value="promo_ad">Promotional Ad Copy</option>
+              <option value="whatsapp_msg">WhatsApp &amp; SMS Broadcast</option>
+              <option value="email_newsletter">Email Newsletter &amp; Blast</option>
+              <option value="product_pitch">Product Showcase &amp; Pitch</option>
+              <option value="special_offer">Discount &amp; Limited Offer</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="grid-2">
+          <div class="form-group">
+            <label for="tone">Brand Tone</label>
+            <select id="tone" required>
+              <option value="persuasive">Persuasive &amp; High-Converting</option>
+              <option value="friendly">Friendly &amp; Casual</option>
+              <option value="professional">Professional &amp; Authoritative</option>
+              <option value="exciting">Exciting &amp; Energetic</option>
+              <option value="urgent">Urgent &amp; Scarcity-Driven</option>
+              <option value="luxury">Luxury &amp; Premium</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="targetAudience">Target Audience (Optional)</label>
+            <input type="text" id="targetAudience" placeholder="e.g. Busy professionals, college students, founders">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="productDetails">Product, Service, or Offer Details</label>
+          <textarea id="productDetails" required placeholder="Describe what you are offering (e.g. 20% off all handcrafted coffee beans this weekend only with coupon code BEAN20)..."></textarea>
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" class="btn-primary" id="generateBtn">
+            <span>✨</span> Generate Copy
+          </button>
+          <button type="button" class="btn-secondary" id="resetBtn">
+            Reset
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card output-section" id="outputSection">
+      <div class="output-header">
+        <span class="output-title">Generated Marketing Copy</span>
+      </div>
+      <div class="output-box" id="outputContent"></div>
+      <div class="output-actions">
+        <button type="button" class="btn-secondary btn-action" id="copyBtn">
+          📋 Copy Text
+        </button>
+        <button type="button" class="btn-primary btn-action" id="regenerateBtn">
+          🔄 Regenerate
+        </button>
+      </div>
+    </div>
+
+    <footer>
+      ME AI &bull; Your Ideas. Your AI. &bull; English Edition
+    </footer>
+  </div>
+
+  <div class="toast" id="toast">Copied to clipboard!</div>
+
+  <script>
+    const form = document.getElementById('marketingForm');
+    const businessTypeEl = document.getElementById('businessType');
+    const contentTypeEl = document.getElementById('contentType');
+    const toneEl = document.getElementById('tone');
+    const audienceEl = document.getElementById('targetAudience');
+    const productEl = document.getElementById('productDetails');
+    const outputSection = document.getElementById('outputSection');
+    const outputContent = document.getElementById('outputContent');
+    const copyBtn = document.getElementById('copyBtn');
+    const regenerateBtn = document.getElementById('regenerateBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const toast = document.getElementById('toast');
+
+    const copyTemplates = {
+      social_post: [
+        (b, prod, tone, aud) => `🚀 Level up your standard with something built just for you.\n\n${prod}\n\n${aud ? `Designed specifically for ${aud}, this` : "This"} is engineered to make an immediate impact. Why settle for ordinary when superior quality is right here?\n\n👉 Click the link in bio or message us now to get started!\n\n#${cleanTag(b)} #Growth #Innovation #MustHave #Exclusive`,
+        (b, prod, tone, aud) => `Stop scrolling — your search ends here! ✨\n\nHere is what you have been waiting for:\n${prod}\n\n${aud ? `If you are among the ${aud} who refuse to compromise, you will love this.` : "Built to deliver real, noticeable results without the hassle."}\n\n💬 Drop a comment below or send a DM to claim yours today.\n\n#BestInClass #${cleanTag(b)} #GameChanger #Trending`,
+        (b, prod, tone, aud) => `Smart choices create exceptional results. 💡\n\nIntroducing our latest spotlight:\n${prod}\n\n${aud ? `Tailored for ${aud} seeking top-tier solutions.` : "Crafted with precision, quality, and attention to detail."}\n\n🔗 Visit our profile link to explore the full story.\n\n#${cleanTag(b)} #DailyInspiration #Excellence #Upgrade`
+      ],
+      promo_ad: [
+        (b, prod, tone, aud) => `🔥 ATTENTION: Transform the way you experience ${b.toLowerCase()}.\n\n${prod}\n\n${aud ? `Ideal for ${aud} who demand top value and high performance.` : "Experience high performance, premium quality, and effortless reliability."}\n\n🎯 Special Launch Promo available for a limited time.\n👉 Tap "Learn More" or contact us today to secure your order!`,
+        (b, prod, tone, aud) => `Ready for an upgrade that actually pays off?\n\nHere is what we deliver:\n${prod}\n\n${aud ? `Specially crafted for ${aud}.` : "Built around proven standards and customer satisfaction."}\n\n⏳ Don't wait until it's gone. Claim yours now before stock runs out!`,
+        (b, prod, tone, aud) => `Premium Quality. Reliable Results. Zero Compromises.\n\n${prod}\n\nJoin hundreds of satisfied customers who made the switch.\n\n⚡ Click below to order now with express delivery and guaranteed satisfaction.`
+      ],
+      whatsapp_msg: [
+        (b, prod, tone, aud) => `Hello! 👋\n\nWe have an exclusive update from our team at *${b}*:\n\n✨ ${prod}\n\n${aud ? `As a valued message for ${aud}, you get priority access.` : "This is an exclusive offer available exclusively to our direct community."}\n\nInterested in learning more or locking in this offer? Reply *YES* to this message and our team will assist you instantly!`,
+        (b, prod, tone, aud) => `Quick message for you! 🌟\n\nHere is the latest offer just announced:\n👉 *${prod}*\n\n${aud ? `Perfect match for ${aud}.` : "Spots and availability are strictly limited."}\n\nReply directly to this chat or tap here to confirm your slot right away!`
+      ],
+      email_newsletter: [
+        (b, prod, tone, aud) => `Subject: An exclusive update made for you 📩\n\nHi there,\n\nAt ${b}, we are dedicated to bringing you the best solutions. Today, we are proud to introduce:\n\n${prod}\n\n${aud ? `We developed this with ${aud} in mind to deliver measurable value and absolute convenience.` : "Everything is engineered to ensure seamless quality and standout results."}\n\nReady to get started? Click the link below to explore full details and claim your benefits:\n\n[>> Claim Your Exclusive Offer Here <<]\n\nWarm regards,\nThe Team`,
+        (b, prod, tone, aud) => `Subject: Don't miss out on what is new at ${b}\n\nHello,\n\nWe have news that you will not want to pass up:\n\n${prod}\n\n${aud ? `Whether you're looking for solutions as ${aud} or upgrading your current setup, this is for you.` : "Take advantage of this special release before the current window closes."}\n\nClick below to get started today:\n[>> Access The Offer Now <<]\n\nBest,\nCustomer Success Team`
+      ],
+      product_pitch: [
+        (b, prod, tone, aud) => `Introducing the smarter solution for ${b.toLowerCase()}.\n\n${prod}\n\nKEY HIGHLIGHTS:\n✔ Designed for high durability and standout performance\n✔ ${aud ? `Engineered specifically to solve key challenges for ${aud}` : "Streamlined to save you time and maximize satisfaction"}\n✔ Backed by dedicated support and proven results\n\nGet in touch today to schedule a demo or place your order.`,
+        (b, prod, tone, aud) => `Meet the next generation of ${b.toLowerCase()}.\n\n${prod}\n\nWHY CHOOSE US:\n• Premium grade materials & attentive craftsmanship\n• Unmatched reliability\n• ${aud ? `Proven favorite among ${aud}` : "Loved by industry-leading customers"}\n\nExperience the difference today.`
+      ],
+      special_offer: [
+        (b, prod, tone, aud) => `🚨 LIMITED-TIME DEAL 🚨\n\nTake advantage of this special opportunity:\n\n🎉 ${prod}\n\n${aud ? `A personalized opportunity curated for ${aud}.` : "Once this promotion period ends, regular pricing applies."}\n\n⏰ ACT FAST: Offer valid while supplies last.\n👉 Use code or contact us immediately to redeem!`,
+        (b, prod, tone, aud) => `⚡ FLASH OFFER: Exclusive Savings on ${b}\n\n${prod}\n\n${aud ? `Designed for ${aud} who want maximum return on value.` : "First come, first served. No rain checks."}\n\nReady to claim it? Tap the button below or send us a direct message right now!`
+      ]
+    };
+
+    const toneModifiers = {
+      urgent: "\n\n⚠️ Urgent: This pricing and bundle are only guaranteed for the next 24 hours. Act now before it expires!",
+      friendly: "\n\nFeel free to ask us any questions — we are always here and happy to help you pick the best fit!",
+      professional: "\n\nFor enterprise inquiries, custom specifications, or corporate onboarding, contact our advisory team.",
+      luxury: "\n\nExperience timeless elegance and distinguished refinement. Reserved for those who appreciate true craft.",
+      exciting: "\n\nGet ready for something truly extraordinary — this changes everything! 🎉",
+      persuasive: "\n\nThousands have already made the switch. Don't let hesitation stand between you and top results."
+    };
+
+    function cleanTag(text) {
+      return text.replace(/[^a-zA-Z0-9]/g, '');
+    }
+
+    function generateContent() {
+      const bType = businessTypeEl.value;
+      const cType = contentTypeEl.value;
+      const tone = toneEl.value;
+      const aud = audienceEl.value.trim();
+      const prod = productEl.value.trim();
+
+      if (!prod) {
+        alert("Please provide product, service, or offer details first.");
+        return;
+      }
+
+      const templateList = copyTemplates[cType] || copyTemplates.social_post;
+      const randomTemplate = templateList[Math.floor(Math.random() * templateList.length)];
+      
+      let generatedText = randomTemplate(bType, prod, tone, aud);
+      if (toneModifiers[tone]) {
+        generatedText += toneModifiers[tone];
+      }
+
+      outputContent.textContent = generatedText;
+      outputSection.style.display = 'block';
+      outputSection.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      generateContent();
+    });
+
+    regenerateBtn.addEventListener('click', () => {
+      generateContent();
+    });
+
+    resetBtn.addEventListener('click', () => {
+      form.reset();
+      outputSection.style.display = 'none';
+      outputContent.textContent = '';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    copyBtn.addEventListener('click', () => {
+      const textToCopy = outputContent.textContent;
+      if (!textToCopy) return;
+
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(textToCopy).then(showToast);
+      } else {
+        const textArea = document.createElement("textarea");
+        textArea.value = textToCopy;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        try {
+          document.execCommand('copy');
+          showToast();
+        } catch (err) {
+          alert('Could not copy text automatically. Please select and copy manually.');
+        }
+        document.body.removeChild(textArea);
+      }
+    });
+
+    function showToast() {
+      toast.style.display = 'block';
+      setTimeout(() => {
+        toast.style.display = 'none';
+      }, 2500);
+    }
+  </script>
+</body>
+  </html>
